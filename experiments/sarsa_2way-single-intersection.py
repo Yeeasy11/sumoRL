@@ -35,7 +35,7 @@ if __name__ == "__main__":
     prs.add_argument("-maxgreen", dest="max_green", type=int, default=50, required=False, help="Maximum green time.\n")
     prs.add_argument("-gui", action="store_true", default=False, help="Run with visualization on SUMO.\n")
     prs.add_argument("-fixed", action="store_true", default=False, help="Run with fixed timing traffic signals.\n")
-    prs.add_argument("-s", dest="seconds", type=int, default=400000, required=False, help="Number of simulation seconds.\n")
+    prs.add_argument("-s", dest="seconds", type=int, default=600, required=False, help="Number of simulation seconds.\n")
     prs.add_argument("-runs", dest="runs", type=int, default=1, help="Number of runs.\n")
     args = prs.parse_args()
 
