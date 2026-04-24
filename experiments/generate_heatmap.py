@@ -16,6 +16,8 @@ from scipy.stats import gaussian_kde
 
 # Publication-quality defaults
 rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Noto Sans CJK SC', 'Arial Unicode MS', 'DejaVu Sans']
+rcParams['axes.unicode_minus'] = False
 rcParams['font.size'] = 10
 rcParams['axes.grid'] = False
 rcParams['axes.labelsize'] = 11
@@ -95,7 +97,7 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
     
     # Setup figure with 3 heatmaps (2D distributions)
     fig, axes = plt.subplots(2, 3, figsize=(16, 10))
-    fig.suptitle("Traffic Congestion Heatmaps: Rule-based vs PPO", 
+    fig.suptitle("交通拥堵热力图对比：规则基线 vs PPO", 
                 fontsize=14, fontweight='bold', y=0.995)
     
     # ========================================================================
@@ -110,12 +112,12 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             y = df_rule['duration'].values
             # Create 2D histogram
             h = ax.hist2d(x, y, bins=30, cmap='YlOrRd', cmin=1)
-            ax.set_xlabel('Waiting Time (s)', fontweight='bold')
-            ax.set_ylabel('Trip Duration (s)', fontweight='bold')
-            ax.set_title('Rule-based: Waiting vs Duration', fontweight='bold', fontsize=11)
-            plt.colorbar(h[3], ax=ax, label='Count')
+            ax.set_xlabel('等待时间 (s)', fontweight='bold')
+            ax.set_ylabel('行程时长 (s)', fontweight='bold')
+            ax.set_title('规则基线：等待-时长分布', fontweight='bold', fontsize=11)
+            plt.colorbar(h[3], ax=ax, label='样本数')
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     # 1.2: Arrival Time Distribution (Rule-based)
     ax = axes[0, 1]
@@ -128,13 +130,13 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             colors_intensity = wait_by_time['count'].values / wait_by_time['count'].max()
             scatter = ax.scatter(x_time, wait_by_time['mean'].values, 
                                c=colors_intensity, s=100, cmap='YlOrRd', alpha=0.7, edgecolors='black')
-            ax.set_xlabel('Arrival Time (s)', fontweight='bold')
-            ax.set_ylabel('Mean Waiting Time (s)', fontweight='bold')
-            ax.set_title('Rule-based: Traffic Evolution', fontweight='bold', fontsize=11)
+            ax.set_xlabel('到达时刻 (s)', fontweight='bold')
+            ax.set_ylabel('平均等待时间 (s)', fontweight='bold')
+            ax.set_title('规则基线：拥堵演化', fontweight='bold', fontsize=11)
             ax.grid(True, alpha=0.3)
-            plt.colorbar(scatter, ax=ax, label='Vehicle Count (normalized)')
+            plt.colorbar(scatter, ax=ax, label='车辆数（归一化）')
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     # 1.3: Waiting Count Distribution (Rule-based)
     ax = axes[0, 2]
@@ -144,12 +146,12 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             colors_rb = ['#FF6B6B' if i > 5 else '#FFB3B3' for i in wait_count_dist.index]
             ax.bar(wait_count_dist.index, wait_count_dist.values, color=colors_rb, 
                   edgecolor='black', linewidth=1.5, alpha=0.8)
-            ax.set_xlabel('Number of Stops', fontweight='bold')
-            ax.set_ylabel('Vehicle Count', fontweight='bold')
-            ax.set_title('Rule-based: Stop Frequency', fontweight='bold', fontsize=11)
+            ax.set_xlabel('停车次数', fontweight='bold')
+            ax.set_ylabel('车辆数', fontweight='bold')
+            ax.set_title('规则基线：停车频次', fontweight='bold', fontsize=11)
             ax.grid(axis='y', alpha=0.3)
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     # ========================================================================
     # Row 2: PPO method
@@ -162,12 +164,12 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             x = df_ppo['waitingTime'].values
             y = df_ppo['duration'].values
             h = ax.hist2d(x, y, bins=30, cmap='Blues', cmin=1)
-            ax.set_xlabel('Waiting Time (s)', fontweight='bold')
-            ax.set_ylabel('Trip Duration (s)', fontweight='bold')
-            ax.set_title('PPO: Waiting vs Duration', fontweight='bold', fontsize=11)
-            plt.colorbar(h[3], ax=ax, label='Count')
+            ax.set_xlabel('等待时间 (s)', fontweight='bold')
+            ax.set_ylabel('行程时长 (s)', fontweight='bold')
+            ax.set_title('PPO：等待-时长分布', fontweight='bold', fontsize=11)
+            plt.colorbar(h[3], ax=ax, label='样本数')
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     # 2.2: Arrival Time Distribution (PPO)
     ax = axes[1, 1]
@@ -179,13 +181,13 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             colors_intensity = wait_by_time['count'].values / wait_by_time['count'].max()
             scatter = ax.scatter(x_time, wait_by_time['mean'].values,
                                c=colors_intensity, s=100, cmap='Blues', alpha=0.7, edgecolors='darkblue')
-            ax.set_xlabel('Arrival Time (s)', fontweight='bold')
-            ax.set_ylabel('Mean Waiting Time (s)', fontweight='bold')
-            ax.set_title('PPO: Traffic Evolution', fontweight='bold', fontsize=11)
+            ax.set_xlabel('到达时刻 (s)', fontweight='bold')
+            ax.set_ylabel('平均等待时间 (s)', fontweight='bold')
+            ax.set_title('PPO：拥堵演化', fontweight='bold', fontsize=11)
             ax.grid(True, alpha=0.3)
-            plt.colorbar(scatter, ax=ax, label='Vehicle Count (normalized)')
+            plt.colorbar(scatter, ax=ax, label='车辆数（归一化）')
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     # 2.3: Waiting Count Distribution (PPO)
     ax = axes[1, 2]
@@ -195,12 +197,12 @@ def create_heatmap_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             colors_ppo = ['#4ECDC4' if i > 5 else '#A8E6E1' for i in wait_count_dist.index]
             ax.bar(wait_count_dist.index, wait_count_dist.values, color=colors_ppo,
                   edgecolor='darkblue', linewidth=1.5, alpha=0.8)
-            ax.set_xlabel('Number of Stops', fontweight='bold')
-            ax.set_ylabel('Vehicle Count', fontweight='bold')
-            ax.set_title('PPO: Stop Frequency', fontweight='bold', fontsize=11)
+            ax.set_xlabel('停车次数', fontweight='bold')
+            ax.set_ylabel('车辆数', fontweight='bold')
+            ax.set_title('PPO：停车频次', fontweight='bold', fontsize=11)
             ax.grid(axis='y', alpha=0.3)
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', ha='center', va='center')
+            ax.text(0.5, 0.5, f'绘图错误：{str(e)[:50]}', ha='center', va='center')
     
     plt.tight_layout()
     out_path = out_dir / "congestion_heatmap.png"
@@ -221,18 +223,18 @@ def create_waiting_time_comparison(eval_600_dir: Path, out_dir: Path) -> None:
     
     # Create figure with distribution comparisons
     fig, axes = plt.subplots(2, 2, figsize=(13, 10))
-    fig.suptitle("Waiting Time Analysis: Rule-based vs PPO", 
+    fig.suptitle("等待时间分析：规则基线 vs PPO", 
                 fontsize=14, fontweight='bold')
     
     # 1. Waiting time distribution (histograms)
     ax = axes[0, 0]
-    ax.hist(df_rule['waitingTime'], bins=40, alpha=0.6, label='Rule-based', 
+    ax.hist(df_rule['waitingTime'], bins=40, alpha=0.6, label='规则基线', 
            color='#FF6B6B', edgecolor='black', linewidth=1)
     ax.hist(df_ppo['waitingTime'], bins=40, alpha=0.6, label='PPO', 
            color='#4ECDC4', edgecolor='black', linewidth=1)
-    ax.set_xlabel('Waiting Time (s)', fontweight='bold')
-    ax.set_ylabel('Frequency', fontweight='bold')
-    ax.set_title('Waiting Time Distribution', fontweight='bold')
+    ax.set_xlabel('等待时间 (s)', fontweight='bold')
+    ax.set_ylabel('频数', fontweight='bold')
+    ax.set_title('等待时间分布', fontweight='bold')
     ax.legend(loc='upper right', fontsize=10)
     ax.grid(axis='y', alpha=0.3)
     
@@ -241,25 +243,25 @@ def create_waiting_time_comparison(eval_600_dir: Path, out_dir: Path) -> None:
     sorted_rule = np.sort(df_rule['waitingTime'])
     sorted_ppo = np.sort(df_ppo['waitingTime'])
     ax.plot(sorted_rule, np.linspace(0, 1, len(sorted_rule)), 
-           label='Rule-based', color='#FF6B6B', linewidth=2.5)
+           label='规则基线', color='#FF6B6B', linewidth=2.5)
     ax.plot(sorted_ppo, np.linspace(0, 1, len(sorted_ppo)), 
            label='PPO', color='#4ECDC4', linewidth=2.5)
-    ax.set_xlabel('Waiting Time (s)', fontweight='bold')
-    ax.set_ylabel('Cumulative Probability', fontweight='bold')
-    ax.set_title('CDF: Waiting Time', fontweight='bold')
+    ax.set_xlabel('等待时间 (s)', fontweight='bold')
+    ax.set_ylabel('累计概率', fontweight='bold')
+    ax.set_title('累计分布函数：等待时间', fontweight='bold')
     ax.legend(loc='lower right', fontsize=10)
     ax.grid(True, alpha=0.3)
     
     # 3. Time Loss comparison
     ax = axes[1, 0]
     data_to_plot = [df_rule['timeLoss'].values, df_ppo['timeLoss'].values]
-    bp = ax.boxplot(data_to_plot, labels=['Rule-based', 'PPO'], patch_artist=True)
+    bp = ax.boxplot(data_to_plot, tick_labels=['规则基线', 'PPO'], patch_artist=True)
     bp['boxes'][0].set_facecolor('#FF6B6B')
     bp['boxes'][1].set_facecolor('#4ECDC4')
     for box in bp['boxes']:
         box.set_alpha(0.7)
-    ax.set_ylabel('Time Loss (s)', fontweight='bold')
-    ax.set_title('Time Loss Distribution', fontweight='bold')
+    ax.set_ylabel('时间损失 (s)', fontweight='bold')
+    ax.set_title('时间损失分布', fontweight='bold')
     ax.grid(axis='y', alpha=0.3)
     
     # 4. Statistics table
@@ -267,16 +269,16 @@ def create_waiting_time_comparison(eval_600_dir: Path, out_dir: Path) -> None:
     ax.axis('off')
     
     stats = {
-        'Metric': [
-            'Mean Waiting Time',
-            'Median Waiting Time',
-            'Max Waiting Time',
-            'Std Dev',
-            'Mean Time Loss',
-            'Mean Trip Duration',
-            'Mean Stops'
+        '指标': [
+            '平均等待时间',
+            '等待时间中位数',
+            '最大等待时间',
+            '标准差',
+            '平均时间损失',
+            '平均行程时长',
+            '平均停车次数'
         ],
-        'Rule-based': [
+        '规则基线': [
             f"{df_rule['waitingTime'].mean():.3f}",
             f"{df_rule['waitingTime'].median():.3f}",
             f"{df_rule['waitingTime'].max():.3f}",
@@ -294,21 +296,21 @@ def create_waiting_time_comparison(eval_600_dir: Path, out_dir: Path) -> None:
             f"{df_ppo['duration'].mean():.3f}",
             f"{df_ppo['waitingCount'].mean():.2f}",
         ],
-        'Improvement (%)': []
+        '改善率 (%)': []
     }
     
     # Calculate improvements
-    for i in range(len(stats['Rule-based'])):
+    for i in range(len(stats['规则基线'])):
         try:
-            rb_val = float(stats['Rule-based'][i])
+            rb_val = float(stats['规则基线'][i])
             ppo_val = float(stats['PPO'][i])
             if rb_val > 0:
                 improvement = (rb_val - ppo_val) / rb_val * 100
-                stats['Improvement (%)'].append(f"{improvement:+.1f}%")
+                stats['改善率 (%)'].append(f"{improvement:+.1f}%")
             else:
-                stats['Improvement (%)'].append("N/A")
+                stats['改善率 (%)'].append("不适用")
         except:
-            stats['Improvement (%)'].append("N/A")
+            stats['改善率 (%)'].append("不适用")
     
     df_stats = pd.DataFrame(stats)
     
@@ -359,7 +361,7 @@ def main():
     parser.add_argument(
         "--out-dir",
         type=str,
-        default="outputs/thesis_figures",
+        default="outputs/figures_repro",
         help="Output directory for generated figures.",
     )
     args = parser.parse_args()

@@ -126,6 +126,7 @@ class SumoEnvironment(gym.Env):
         self.render_mode = render_mode
         self.virtual_display = virtual_display
         self.disp = None
+        self.sumo = None
 
         self._net = net_file
         self._route = route_file
@@ -159,8 +160,6 @@ class SumoEnvironment(gym.Env):
         self.add_per_agent_info = add_per_agent_info
         self.label = str(SumoEnvironment.CONNECTION_LABEL)
         SumoEnvironment.CONNECTION_LABEL += 1
-        self.sumo = None
-
         if LIBSUMO:
             traci.start([sumolib.checkBinary("sumo"), "-n", self._net])  # Start only to retrieve traffic light information
             conn = traci

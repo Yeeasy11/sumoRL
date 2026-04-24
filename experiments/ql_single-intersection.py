@@ -34,14 +34,32 @@ if __name__ == "__main__":
     prs.add_argument("-d", dest="decay", type=float, default=1.0, required=False, help="Epsilon decay.\n")
     prs.add_argument("-mingreen", dest="min_green", type=int, default=10, required=False, help="Minimum green time.\n")
     prs.add_argument("-maxgreen", dest="max_green", type=int, default=50, required=False, help="Maximum green time.\n")
-    prs.add_argument("-gui", action="store_true", default=False, help="Run with visualization on SUMO.\n")
+    prs.add_argument("-gui", action="store_true", default=True, help="Run with visualization on SUMO.\n")
     prs.add_argument("-fixed", action="store_true", default=False, help="Run with fixed timing traffic signals.\n")
     prs.add_argument("-ns", dest="ns", type=int, default=42, required=False, help="Fixed green time for NS.\n")
     prs.add_argument("-we", dest="we", type=int, default=42, required=False, help="Fixed green time for WE.\n")
     prs.add_argument("-s", dest="seconds", type=int, default=10000, required=False, help="Number of simulation seconds.\n")
+    prs.add_argument(
+        "--delta-time",
+        dest="delta_time",
+        type=int,
+        default=5,
+        required=False,
+        help="Simulation seconds advanced per control step. Lower is visually slower in GUI.\n",
+    )
+    prs.add_argument(
+        "--sumo-args",
+        dest="sumo_args",
+        type=str,
+        default="",
+        required=False,
+        help="Extra SUMO args, e.g. '--window-size 1800,1000 --step-length 0.5'.\n",
+    )
     prs.add_argument("-v", action="store_true", default=False, help="Print experience tuple.\n")
     prs.add_argument("-runs", dest="runs", type=int, default=1, help="Number of runs.\n")
     args = prs.parse_args()
+    if args.delta_time <= 2:
+        prs.error("--delta-time must be greater than 2 (yellow_time is 2). Try --delta-time 3.")
     experiment_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     # experiment_time = str(datetime.now()).split(".")[0]
     out_csv = f"outputs/single-intersection/{experiment_time}_alpha{args.alpha}_gamma{args.gamma}_eps{args.epsilon}_decay{args.decay}"
@@ -52,8 +70,10 @@ if __name__ == "__main__":
         out_csv_name=out_csv,
         use_gui=args.gui,
         num_seconds=args.seconds,
+        delta_time=args.delta_time,
         min_green=args.min_green,
         max_green=args.max_green,
+        additional_sumo_cmd=args.sumo_args if args.sumo_args else None,
     )
 
     for run in range(1, args.runs + 1):

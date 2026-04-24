@@ -77,8 +77,6 @@ def make_env(
 
     if reward_mode == "full":
         reward_fn = lambda ts: reward_full_with_collision_penalty(ts, collision_penalty=collision_penalty)  # noqa: E731
-    elif reward_mode == "no_collision":
-        reward_fn = "diff-waiting-time"
     else:
         raise ValueError(f"Unknown reward_mode: {reward_mode}")
 
@@ -118,6 +116,8 @@ def main() -> None:
     prs.add_argument("--timesteps", type=int, default=200_000)
     prs.add_argument("--lr", type=float, default=3e-4)
     prs.add_argument("--gamma", type=float, default=0.99)
+    prs.add_argument("--n-steps", type=int, default=2048)
+    prs.add_argument("--n-epochs", type=int, default=10)
     prs.add_argument("--batch-size", type=int, default=64)
     prs.add_argument("--hidden", type=int, nargs=2, default=[64, 64])
     prs.add_argument("--seed", type=int, default=0)
@@ -127,9 +127,9 @@ def main() -> None:
     prs.add_argument(
         "--reward-mode",
         type=str,
-        choices=["full", "no_collision"],
+        choices=["full"],
         default="full",
-        help="Reward ablation: full includes collision penalty; no_collision uses default diff-waiting-time.",
+        help="Reward ablation: only full reward (with collision penalty) is retained.",
     )
     prs.add_argument(
         "--obs-mode",
@@ -164,13 +164,35 @@ def main() -> None:
         seed=args.seed,
     )
 
+    # For smoke tests with small --timesteps, avoid PPO's default 2048-step rollout
+    # that can make progress look like it "overruns" the requested budget.
+    effective_n_steps = min(args.n_steps, args.timesteps)
+    if effective_n_steps < 2:
+        raise ValueError("--timesteps and --n-steps must be >= 2 for PPO")
+
+    effective_batch_size = args.batch_size
+    if effective_batch_size > effective_n_steps:
+        effective_batch_size = effective_n_steps
+        print(
+            f"[INFO] batch_size ({args.batch_size}) > n_steps ({effective_n_steps}), "
+            f"using batch_size={effective_batch_size}."
+        )
+
+    print(
+        "[INFO] PPO config: "
+        f"timesteps={args.timesteps}, n_steps={effective_n_steps}, "
+        f"n_epochs={args.n_epochs}, batch_size={effective_batch_size}"
+    )
+
     policy_kwargs = dict(net_arch=list(args.hidden))
     model = PPO(
         "MlpPolicy",
         env,
         learning_rate=args.lr,
         gamma=args.gamma,
-        batch_size=args.batch_size,
+        n_steps=effective_n_steps,
+        n_epochs=args.n_epochs,
+        batch_size=effective_batch_size,
         policy_kwargs=policy_kwargs,
         verbose=1,
         tensorboard_log=args.logdir,

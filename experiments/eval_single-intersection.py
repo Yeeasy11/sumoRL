@@ -139,6 +139,7 @@ def resolve_sumo_rl_csv(prefix: str, episode: int) -> Path:
 
 def run_episode(
     method: str,
+    algo: str,
     route_file: str,
     seconds: int,
     delta_time: int,
@@ -182,14 +183,20 @@ def run_episode(
     model = None
     if model_path and not fixed_ts:
         try:
-            from stable_baselines3 import PPO  # lazy import: allow rule-based runs without SB3 installed
+            if algo.lower() == "ppo":
+                from stable_baselines3 import PPO  # lazy import
+                model = PPO.load(model_path)
+            elif algo.lower() == "dqn":
+                from stable_baselines3 import DQN  # lazy import
+                model = DQN.load(model_path)
+            else:
+                raise ValueError(f"Unsupported algo: {algo}")
         except ModuleNotFoundError as e:
             raise ModuleNotFoundError(
-                "stable_baselines3 is required for PPO evaluation.\n"
+                "stable_baselines3 is required for model evaluation.\n"
                 'Install with: pip install "stable-baselines3[extra]" torch tensorboard\n'
                 "Then re-run with --ppo-model ..."
             ) from e
-        model = PPO.load(model_path)
 
     obs, info = env.reset()
     terminated, truncated = False, False
@@ -254,6 +261,13 @@ def main() -> None:
         help="Observation mode for evaluation (must match the PPO model).",
     )
     prs.add_argument(
+        "--algo",
+        type=str,
+        choices=["ppo", "dqn"],
+        default="ppo",
+        help="RL algorithm type for --ppo-model loading.",
+    )
+    prs.add_argument(
         "--ppo-model",
         type=str,
         default="",
@@ -272,7 +286,7 @@ def main() -> None:
 
     methods = ["Rule-based"]
     if args.ppo_model:
-        methods.append("PPO")
+        methods.append(args.algo.upper())
 
     results: list[EvalResult] = []
     for method in methods:
@@ -281,6 +295,7 @@ def main() -> None:
             model_path = None if method == "Rule-based" else args.ppo_model
             r = run_episode(
                 method=method,
+                algo=args.algo,
                 route_file=args.route,
                 seconds=args.seconds,
                 delta_time=args.delta_time,

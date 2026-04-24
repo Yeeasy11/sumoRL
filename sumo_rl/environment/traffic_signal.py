@@ -232,14 +232,6 @@ class TrafficSignal:
         self.last_ts_waiting_time = ts_wait
         return reward
 
-    def _observation_fn_default(self):
-        phase_id = [1 if self.green_phase == i else 0 for i in range(self.num_green_phases)]  # one-hot encoding
-        min_green = [0 if self.time_since_last_phase_change < self.min_green + self.yellow_time else 1]
-        density = self.get_lanes_density()
-        queue = self.get_lanes_queue()
-        observation = np.array(phase_id + min_green + density + queue, dtype=np.float32)
-        return observation
-
     def get_accumulated_waiting_time_per_lane(self) -> List[float]:
         """Returns the accumulated waiting time per lane.
 
@@ -281,15 +273,6 @@ class TrafficSignal:
         return sum(self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.out_lanes) - sum(
             self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.lanes
         )
-
-    def get_out_lanes_density(self) -> List[float]:
-        """Returns the density of the vehicles in the outgoing lanes of the intersection."""
-        lanes_density = [
-            self.sumo.lane.getLastStepVehicleNumber(lane)
-            / (self.lanes_length[lane] / (self.MIN_GAP + self.sumo.lane.getLastStepLength(lane)))
-            for lane in self.out_lanes
-        ]
-        return [min(1, density) for density in lanes_density]
 
     def get_lanes_density(self) -> List[float]:
         """Returns the density [0,1] of the vehicles in the incoming lanes of the intersection.

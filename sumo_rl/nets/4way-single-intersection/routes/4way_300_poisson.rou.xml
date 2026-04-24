@@ -1,0 +1,26 @@
+<routes>
+    <route id="route_n_left" edges="n_t t_e" />
+    <route id="route_n_straight" edges="n_t t_s" />
+    <route id="route_n_right" edges="n_t t_w" />
+    <route id="route_e_left" edges="e_t t_s" />
+    <route id="route_e_straight" edges="e_t t_w" />
+    <route id="route_e_right" edges="e_t t_n" />
+    <route id="route_s_left" edges="s_t t_w" />
+    <route id="route_s_straight" edges="s_t t_n" />
+    <route id="route_s_right" edges="s_t t_e" />
+    <route id="route_w_left" edges="w_t t_n" />
+    <route id="route_w_straight" edges="w_t t_e" />
+    <route id="route_w_right" edges="w_t t_s" />
+    <flow id="flow_n_left_poisson" route="route_n_left" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_n_straight_poisson" route="route_n_straight" begin="0" end="600" vehsPerHour="180" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_n_right_poisson" route="route_n_right" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_e_left_poisson" route="route_e_left" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_e_straight_poisson" route="route_e_straight" begin="0" end="600" vehsPerHour="180" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_e_right_poisson" route="route_e_right" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_s_left_poisson" route="route_s_left" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_s_straight_poisson" route="route_s_straight" begin="0" end="600" vehsPerHour="180" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_s_right_poisson" route="route_s_right" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_w_left_poisson" route="route_w_left" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_w_straight_poisson" route="route_w_straight" begin="0" end="600" vehsPerHour="180" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_w_right_poisson" route="route_w_right" begin="0" end="600" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+</routes>

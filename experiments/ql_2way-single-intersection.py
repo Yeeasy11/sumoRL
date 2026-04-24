@@ -23,7 +23,7 @@ if __name__ == "__main__":
         "-route",
         dest="route",
         type=str,
-        default="nets/2way-single-intersection/single-intersection-vhvh.rou.xml",
+        default="sumo_rl/nets/2way-single-intersection/single-intersection-fourdir-straight.rou.xml",
         help="Route definition xml file.\n",
     )
     prs.add_argument("-a", dest="alpha", type=float, default=0.1, required=False, help="Alpha learning rate.\n")
@@ -46,11 +46,11 @@ if __name__ == "__main__":
     )
     prs.add_argument("-runs", dest="runs", type=int, default=1, help="Number of runs.\n")
     args = prs.parse_args()
-    experiment_time = str(datetime.now()).split(".")[0]
+    experiment_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_csv = f"outputs/2way-single-intersection/{experiment_time}_alpha{args.alpha}_gamma{args.gamma}_eps{args.epsilon}_decay{args.decay}_reward{args.reward}"
 
     env = SumoEnvironment(
-        net_file="sumo_rl/nets/2way-single-intersection/single-intersection.net.xml",
+        net_file="sumo_rl/nets/2way-single-intersection/single-intersection-fourdir-straight.net.xml",
         route_file=args.route,
         out_csv_name=out_csv,
         use_gui=args.gui,

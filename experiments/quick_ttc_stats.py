@@ -6,7 +6,7 @@ import sys
 import pandas as pd
 import numpy as np
 
-ttc_df = pd.read_csv("outputs/thesis_figures/ttc_samples.csv")
+ttc_df = pd.read_csv("outputs/figures_repro/ttc_samples.csv")
 
 for method in ["Rule-based", "PPO"]:
     sub = ttc_df[ttc_df["method"] == method]

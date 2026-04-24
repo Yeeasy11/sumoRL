@@ -1,0 +1,10 @@
+<routes>
+    <route id="route_ns" edges="n_t t_s" />
+    <route id="route_we" edges="w_t t_e" />
+    <flow id="flow_ns_burst_1" route="route_ns" begin="0" end="200" vehsPerHour="450" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_we_burst_1" route="route_we" begin="0" end="200" vehsPerHour="450" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_ns_burst_2" route="route_ns" begin="200" end="400" vehsPerHour="1620" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_we_burst_2" route="route_we" begin="200" end="400" vehsPerHour="1620" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_ns_burst_3" route="route_ns" begin="400" end="600" vehsPerHour="450" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="flow_we_burst_3" route="route_we" begin="400" end="600" vehsPerHour="450" departSpeed="max" departPos="base" departLane="best" />
+</routes>

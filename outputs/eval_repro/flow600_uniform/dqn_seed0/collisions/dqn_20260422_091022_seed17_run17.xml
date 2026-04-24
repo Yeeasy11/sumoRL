@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-04-22T09:10:23.514766+08:00 by Eclipse SUMO sumo 1.25.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="sumo_rl/nets/2way-single-intersection/single-intersection-fourdir-straight.net.xml"/>
+        <route-files value="sumo_rl\nets\4way-single-intersection\routes\4way_600_uniform.rou.xml"/>
+    </input>
+
+    <output>
+        <tripinfo-output value="F:\py\sumo-rl\outputs\eval_repro\flow600_uniform\dqn_seed0\tripinfo\dqn_20260422_091022_seed17_run17.xml"/>
+        <collision-output value="F:\py\sumo-rl\outputs\eval_repro\flow600_uniform\dqn_seed0\collisions\dqn_20260422_091022_seed17_run17.xml"/>
+    </output>
+
+    <processing>
+        <collision.action value="warn"/>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="1000"/>
+        <max-depart-delay value="-1"/>
+    </processing>
+
+    <traci_server>
+        <remote-port value="57545"/>
+    </traci_server>
+
+    <random_number>
+        <seed value="17"/>
+    </random_number>
+
+</sumoConfiguration>
+-->
+
+<collisions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/collision_file.xsd">
+</collisions>
